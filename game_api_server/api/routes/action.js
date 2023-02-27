@@ -16,6 +16,9 @@ const ssh_config = {
     pass: process.env.SSH_PASSWORD
 };
 
+const wallet_pass = process.env.WALLET_KEY;
+
+
 /* router.post("/get_action", (request, result, next) => {
     const cypher = crypto.createCipheriv(algorithm, security_key, initialization_vector);
     let data = cypher.update(JSON.stringify(request.body), "utf-8", "base64");
@@ -36,9 +39,14 @@ router.post("/push_action", (request, result, next) => {
     const action = {type: data.type, name: data.action_name, account_name: data.account, data: data.data};
     if(action.type == process.env.PUSH_ACTION && action.name == process.env.INSERT_SCORE){
         var ssh = new ssh_client(ssh_config);
+        ssh.exec(`/home/inery-genesis/inery/bin/cline wallet unlock --password ${wallet_pass}`, {
+            out: function (stdout) { console.log(stdout); },
+            error: function (stder) { console.log(stder); }
+        }).start();
+        
         ssh.exec(`<path to cline>/cline push action ${action.account_name} ${action.name} '["${action.data.username}", ${action.data.score}, ${action.data.coins}]' -p ${action.account_name}@active`, {
             out: function (stdout) { console.log(stdout); },
-            error: function (stder) { console.log("aa"); }
+            error: function (stder) { console.log(stder); }
         }).start();
 
         result.status(201).json({
@@ -64,6 +72,11 @@ router.put("/push_action", (request, result, next) => {
     const action = {type: data.type, name: data.action_name, account_name: data.account, data: data.data};
     if(action.type == process.env.PUSH_ACTION && action.name == process.env.INSERT_SCORE){
         var ssh = new ssh_client(ssh_config);
+        ssh.exec(`/home/inery-genesis/inery/bin/cline wallet unlock --password ${wallet_pass}`, {
+            out: function (stdout) { console.log(stdout); },
+            error: function (stder) { console.log(stder); }
+        }).start();
+        
         ssh.exec(`<path to cline>/cline push action ${action.account_name} ${action.name} '["${action.data.username}", ${action.data.score}, ${action.data.coins}]' -p ${action.account_name}@active`, {
             out: function (stdout) { console.log(stdout); },
             error: function (stder) { console.log(stder); }
