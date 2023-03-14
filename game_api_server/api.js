@@ -7,7 +7,8 @@ const api = express();
 const routes = require("./api/routes/action");
 
 api.use(morgan("dev"));
-api.use(parser.urlencoded({extended: false}));
+api.use(parser.urlencoded({extended: false})); // 'extended: false' means that only string values are supported, 
+//instead of 'extended: true' that means that json supports more values except only strings
 api.use(parser.json());
 
 api.use(cors({
